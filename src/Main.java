@@ -77,11 +77,11 @@ class Menu {
     public static void menuPacientes(Hospital hospital) {
         int opcion;
         Scanner sc = new Scanner(System.in);
+        Paciente p;
 
         do {
             PrintMenu.printMenuPacientes();
-            opcion = sc.nextInt();
-            sc.nextLine();
+            opcion = Utilidad.leerEntero(sc, "");
 
             switch (opcion) {
                 case 1:
@@ -94,10 +94,18 @@ class Menu {
                     hospital.listarPacientes();
                     break;
                 case 4:
-                    hospital.modificarPaciente(sc);
+                    p = hospital.buscarPaciente(sc);
+                    if(p != null){
+                        p.modificarPaciente(sc);
+                        break;
+                    }
                     break;
                 case 5:
-                    hospital.printPaciente(sc);
+                    p = hospital.buscarPaciente(sc);
+                    if(p != null){
+                        p.printPaciente();
+                        break;
+                    }
                     break;
                 case 0:
                     break;
@@ -111,11 +119,11 @@ class Menu {
         int opcion;
         String nombre;
         Scanner sc = new Scanner(System.in);
+        Medico m;
 
         do {
             PrintMenu.printMenuMedicos();
-            opcion = sc.nextInt();
-            sc.nextLine();
+            opcion = Utilidad.leerEntero(sc, "");
 
             switch (opcion) {
                 case 1:
@@ -128,10 +136,15 @@ class Menu {
                     hospital.listarMedicos();
                     break;
                 case 4:
-                    hospital.modificarMedico(sc);
+                    m = hospital.buscarMedico(sc);
+                    if(m != null){
+                        m.modificarMedico(sc);
+                        break;
+                    }
                     break;
                 case 5:
-                    hospital.printMedico(sc);
+                    m = hospital.buscarMedico(sc);
+                    hospital.printMedico(m);
                     break;
                 case 6:
                     System.out.print("Ingrese el nombre del medico: ");
@@ -148,11 +161,11 @@ class Menu {
     public static void menuConsultas(Hospital hospital) {
         int opcion;
         Scanner sc = new Scanner(System.in);
+        Consulta c;
 
         do {
             PrintMenu.printMenuConsultas();
-            opcion = sc.nextInt();
-            sc.nextLine();
+            opcion = Utilidad.leerEntero(sc, "");
 
             switch (opcion) {
                 case 1:
@@ -165,10 +178,21 @@ class Menu {
                     hospital.listarConsultas();
                     break;
                 case 4:
-                    hospital.opcionModificarConsulta(sc);
+                    c = hospital.buscarConsulta(sc);
+                    if(c != null) {
+                        do {
+                            System.out.println("1.- Modificar los datos de la consulta\n2.- Reagendar la Consulta");
+                            opcion = Utilidad.leerEntero(sc, "");
+                        } while (opcion != 1 && opcion != 2);
+                        if (opcion == 1) {
+                            c.modificarConsulta(hospital, sc);
+                        } else {
+                            c.modificarConsulta(sc);
+                        }
+                    }
                     break;
                 case 5:
-                    Consulta c = hospital.buscarConsulta(sc);
+                    c = hospital.buscarConsulta(sc);
                     hospital.printConsulta(c);
                     break;
                 case 0:
@@ -190,7 +214,7 @@ public class Main {
         do{
             PrintMenu.printMenuPrincipal();
             Scanner sc = new Scanner(System.in);
-            opcion = sc.nextInt();
+            opcion = Utilidad.leerEntero(sc, "");
             switch (opcion){
                 case 1:
                     Menu.menuPacientes(hospitalCentral);

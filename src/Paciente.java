@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Paciente {
     private String rut;
     private String nombre;
@@ -44,5 +46,28 @@ public class Paciente {
 
     public void setDiagnostico(String diagnostico){
         this.diagnostico = diagnostico;
+    }
+
+    public void printPaciente(){
+        System.out.println("Paciente encontrado:");
+        System.out.println("RUT: " + getRut());
+        System.out.println("Nombre: " + getNombre());
+        System.out.println("Edad: " + getEdad());
+        System.out.println("Diagnóstico: " + getDiagnostico());
+    }
+
+    public void modificarPaciente(Scanner sc) {
+
+        System.out.print("Ingrese nuevo nombre: ");
+        String nombre = sc.nextLine();
+        setNombre(nombre);
+
+        int edad = Utilidad.leerEntero(sc,"Ingrese nueva edad: ");
+        sc.nextLine();
+        setEdad(edad);
+
+        System.out.print("Ingrese nuevo diagnóstico: ");
+        String diag = sc.nextLine();
+        setDiagnostico(diag);
     }
 }

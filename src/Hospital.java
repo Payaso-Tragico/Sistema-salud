@@ -61,10 +61,6 @@ public class Hospital {
 
     public boolean removeMedico(Medico medico){ return medicos.remove(medico); }
 
-    public Paciente buscarPaciente(String rut){
-        return pacientes.get(rut);
-    }
-
     /*MÉTODOS APLICADOS SOBRE "MÉDICO"*/
     public Medico buscarMedico(Scanner sc){
         String rut;
@@ -77,7 +73,29 @@ public class Hospital {
                 return m;
             }
         }
+        System.out.print("El medico no existe. ");
         return null;
+    }
+
+    public void printMedico(Medico m){
+        if(m != null){
+            System.out.println("\n--- DATOS DEL MÉDICO ---");
+            System.out.println("RUT: " +m.getRut());
+            System.out.println("Nombre: " +m.getNombre());
+            System.out.println("Especialidad: " +m.getEspecialidad());
+        }else{
+            System.out.println("Médico no encontrado.");
+        }
+    }
+
+    /*BUSQUEDA POR NOMBRE, SOBRECARGA 1*/
+    public void printMedico(String nombre){
+        for(Medico m : getMedicos()){
+            if(m.getNombre().equals(nombre)){
+                printMedico(m);
+            }
+        }
+
     }
 
     public void agregarMedico(Scanner sc){
@@ -94,63 +112,10 @@ public class Hospital {
         agregarMedico(medico);
     }
 
-    public void printMedico(Scanner sc){
-        Medico m = buscarMedico(sc);
-
-        if(m != null){
-            System.out.println("Médico encontrado:");
-            System.out.println("RUT: " +m.getRut());
-            System.out.println("Nombre: " +m.getNombre());
-            System.out.println("Especialidad: " +m.getEspecialidad());
-        }else{
-            System.out.println("Médico no encontrado.");
-        }
-    }
-
-    public void printMedico(Medico m){
-        if(m != null){
-            System.out.println("\n--- DATOS DEL MÉDICO ---");
-            System.out.println("RUT: " +m.getRut());
-            System.out.println("Nombre: " +m.getNombre());
-            System.out.println("Especialidad: " +m.getEspecialidad());
-        }else{
-            System.out.println("Médico no encontrado.");
-        }
-    }
-
-    //El otro metodo con sobrecarga. este imprime todas las consultas asociadas al medico buscado.
-    public void printMedico(String nombre){
-        /*CAMBIARLO POR UN BUSCAR POR NOMBRE*/
-        for(Medico m : getMedicos()){
-            if(m.getNombre().equals(nombre)){
-                printMedico(m);
-            }
-        }
-
-    }
-
     public void listarMedicos(){
         System.out.println("\n--- LISTA DE MÉDICOS ---");
         for (Medico m : getMedicos()){
             System.out.println("RUT: " +m.getRut() +" | Nombre: " +m.getNombre() +" | Especialidad: " +m.getEspecialidad());
-        }
-    }
-
-    public void modificarMedico(Scanner sc){
-        String nombre, especialidad;
-        Medico m = buscarMedico(sc);
-
-        if(m != null){
-            System.out.print("Ingrese nuevo nombre: ");
-            nombre = sc.nextLine();
-            m.setNombre(nombre);
-
-            System.out.print("Ingrese nueva especialidad: ");
-            especialidad = sc.nextLine();
-            m.setEspecialidad(especialidad);
-
-        }else{
-            System.out.println("El medico no existe.");
         }
     }
 
@@ -169,9 +134,7 @@ public class Hospital {
         int id;
         String fecha, motivo, sala;
 
-        System.out.print("Ingrese ID de la consulta: ");
-        id = sc.nextInt();
-        sc.nextLine();
+        id = Utilidad.leerEntero(sc,"Ingrese ID de la consulta: " );
 
         System.out.print("Ingrese fecha de la consulta (DD-MM-YYYY): ");
         fecha = sc.nextLine();
@@ -209,8 +172,7 @@ public class Hospital {
     public Consulta buscarConsulta(Scanner sc){
         int id;
 
-        System.out.print("Ingrese ID de la consulta: ");
-        id = sc.nextInt();
+        id = Utilidad.leerEntero(sc,"Ingrese ID de la consulta: ");
         sc.nextLine();
 
         for(Medico m : getMedicos()){
@@ -220,6 +182,7 @@ public class Hospital {
                 }
             }
         }
+        System.out.print("La consulta no existe.");
         return null;
     }
 
@@ -230,78 +193,6 @@ public class Hospital {
                 System.out.println("ID: " +c.getId() +" | Paciente: " +c.getPaciente().getNombre() +" | Médico: " +m.getNombre());
             }
 
-        }
-    }
-
-    public void modificarConsulta(Scanner sc) {
-        Consulta c = buscarConsulta(sc);
-
-        if(c != null){
-            System.out.print("Nueva fecha: ");
-            String fecha = sc.nextLine();
-            c.setFecha(fecha);
-
-            System.out.print("Nuevo motivo: ");
-            String motivo = sc.nextLine();
-            c.setMotivo(motivo);
-
-            System.out.print("Nueva sala: ");
-            String sala = sc.nextLine();
-            c.setSala(sala);
-
-            System.out.println("Seleccionar nuevo paciente:");
-            Paciente paciente = buscarPaciente(sc);
-            if(paciente != null) {
-                c.setPaciente(paciente);
-            }
-
-            /*TENGO MIS DUDAS SOBRE ESTO*/
-            System.out.println("Igrese el RUT del nuevo medico:");
-            String rut = sc.nextLine();
-            for(Medico m : getMedicos()){
-                if(m.getRut().equals(rut)){
-                    for(Medico med : getMedicos()){
-                        med.getConsultas().remove(c);
-                    }
-                    m.getConsultas().add(c);
-                }
-            }
-
-        } else {
-            System.out.println("La consulta no existe.");
-        }
-    }
-
-    //La función de sobrecarga. la idea es que funciona como una especie de "reagendación"
-    public void modificarConsulta(int id, String fecha){
-        for(Medico m : getMedicos()) {
-            for (Consulta c : m.getConsultas()) {
-                if (c.getId() == id) {
-                    c.setFecha(fecha);
-                    System.out.println("Fecha de la consulta ID " + id + " actualizada a " + fecha);
-                    return;
-                }
-            }
-        }
-        System.out.println("Consulta no encontrada.");
-    }
-
-    public void opcionModificarConsulta(Scanner sc){
-        int opcion, id;
-        String fecha;
-        System.out.print("¿Desea solo reagendar la fecha de la consulta? (1 = Sí, 0 = No): ");
-        opcion = sc.nextInt();
-        sc.nextLine();
-
-        if(opcion == 1){
-            System.out.print("Ingrese ID de la consulta: ");
-            id = sc.nextInt();
-            sc.nextLine();
-            System.out.print("Ingrese nueva fecha (DD-MM-YYYY): ");
-            fecha = sc.nextLine();
-            modificarConsulta(id, fecha);
-        }else{
-            modificarConsulta(sc);
         }
     }
 
@@ -316,26 +207,26 @@ public class Hospital {
     public void printConsulta(Consulta c){
         Medico med = null;
 
-        for(Medico m : getMedicos()){
-            for(Consulta consulta : m.getConsultas()){
-                if(consulta.getId() == c.getId()){
-                    med = m;
+        if(c != null) {
+            for (Medico m : getMedicos()) {
+                for (Consulta consulta : m.getConsultas()) {
+                    if (consulta.getId() == c.getId()) {
+                        med = m;
+                    }
                 }
             }
+
+            if (med != null) {
+                System.out.println("CONSULTA:" + c.getId());
+                System.out.println("Fecha: " + c.getFecha());
+                System.out.println("Motivo: " + c.getMotivo());
+                System.out.println("Sala: " + c.getSala());
+                System.out.println("Paciente: " + c.getPaciente().getNombre() + " (RUT: " + c.getPaciente().getRut() + ")");
+                System.out.println("Médico: " + med.getNombre() + " (RUT: " + med.getRut() + ")");
+            } else {
+                System.out.println("Consulta no encontrada.");
+            }
         }
-
-
-        if (med != null && c != null) {
-            System.out.println("CONSULTA:" + c.getId());
-            System.out.println("Fecha: " + c.getFecha());
-            System.out.println("Motivo: " + c.getMotivo());
-            System.out.println("Sala: " + c.getSala());
-            System.out.println("Paciente: " + c.getPaciente().getNombre() + " (RUT: " + c.getPaciente().getRut() + ")");
-            System.out.println("Médico: " + med.getNombre() + " (RUT: " + med.getRut() + ")");
-        } else {
-            System.out.println("Consulta no encontrada.");
-        }
-
     }
     /*----------------------------------------------------------------------------------------------------------------*/
     /*MÉTODOS PARA PACIENTES*/
@@ -347,8 +238,7 @@ public class Hospital {
         rut = sc.nextLine();
         System.out.print("Ingrese nombre: ");
         nombre = sc.nextLine();
-        System.out.print("Ingrese edad: ");
-        edad = sc.nextInt();
+        edad = Utilidad.leerEntero(sc, "Ingrese edad: ");
         sc.nextLine();
         System.out.print("Ingrese diagnóstico: ");
         diagnostico = sc.nextLine();
@@ -366,21 +256,8 @@ public class Hospital {
                 return p;
             }
         }
+        System.out.print("El paciente no existe.");
         return null;
-    }
-
-    public void printPaciente(Scanner sc){
-        Paciente p = buscarPaciente(sc);
-
-        if (p != null) {
-            System.out.println("Paciente encontrado:");
-            System.out.println("RUT: " + p.getRut());
-            System.out.println("Nombre: " + p.getNombre());
-            System.out.println("Edad: " + p.getEdad());
-            System.out.println("Diagnóstico: " + p.getDiagnostico());
-        } else {
-            System.out.println("El paciente no existe.");
-        }
     }
 
     public void eliminarPaciente(Scanner sc){
@@ -400,25 +277,4 @@ public class Hospital {
         }
     }
 
-    public void modificarPaciente(Scanner sc){
-        Paciente p = buscarPaciente(sc);
-
-        if (p != null) {
-            System.out.print("Ingrese nuevo nombre: ");
-            String nombre = sc.nextLine();
-            p.setNombre(nombre);
-
-            System.out.print("Ingrese nueva edad: ");
-            int edad = sc.nextInt();
-            sc.nextLine();
-            p.setEdad(edad);
-
-            System.out.print("Ingrese nuevo diagnóstico: ");
-            String diag = sc.nextLine();
-            p.setDiagnostico(diag);
-
-        } else {
-            System.out.println("El paciente no existe.");
-        }
-    }
 }

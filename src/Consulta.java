@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Consulta {
     private int id;
     private String fecha;
@@ -5,7 +7,7 @@ public class Consulta {
     private String sala;
     private Paciente paciente;
 
-    public Consulta(){
+    public Consulta() {
     }
 
     public Consulta(int id, String fecha, String motivo, String sala, Paciente paciente) {
@@ -16,11 +18,11 @@ public class Consulta {
         this.paciente = paciente;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public String getSala(){
+    public String getSala() {
         return sala;
     }
 
@@ -36,11 +38,11 @@ public class Consulta {
         return paciente;
     }
 
-    public void setId(int id){
+    public void setId(int id) {
         this.id = id;
     }
 
-    public void setSala(String sala){
+    public void setSala(String sala) {
         this.sala = sala;
     }
 
@@ -56,4 +58,45 @@ public class Consulta {
         this.paciente = paciente;
     }
 
+    public void modificarConsulta(Hospital h, Scanner sc) {
+
+        System.out.print("Nueva fecha: ");
+        String fecha = sc.nextLine();
+        setFecha(fecha);
+
+        System.out.print("Nuevo motivo: ");
+        String motivo = sc.nextLine();
+        setMotivo(motivo);
+
+        System.out.print("Nueva sala: ");
+        String sala = sc.nextLine();
+        setSala(sala);
+
+        System.out.println("Seleccionar nuevo paciente:");
+        Paciente paciente = h.buscarPaciente(sc);
+        if (paciente != null) {
+            setPaciente(paciente);
+        }
+
+        /*TENGO MIS DUDAS SOBRE ESTO*/
+        System.out.println("Igrese el RUT del nuevo medico:");
+        String rut = sc.nextLine();
+        for (Medico m : h.getMedicos()) {
+            if (m.getRut().equals(rut)) {
+                for (Medico med : h.getMedicos()) {
+                    med.getConsultas().remove(this);
+                }
+                m.getConsultas().add(this);
+            }
+        }
+    }
+
+    //La función de sobrecarga. la idea es que funciona como una especie de "reagendación"
+    public void modificarConsulta(Scanner sc) {
+        String fecha;
+        System.out.println("Ingrese la fecha de la nueva consulta");
+        fecha = sc.nextLine();
+        setFecha(fecha);
+        System.out.println("Fecha de la consulta con ID: " + getId() + " actualizada a " + fecha);
+    }
 }
