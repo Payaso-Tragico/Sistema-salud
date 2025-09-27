@@ -60,12 +60,10 @@ public class Hospital {
     public boolean removePaciente(String rut){ return pacientes.remove(rut) != null; }
 
     public boolean removeMedico(Medico medico){ return medicos.remove(medico); }
-
+    /*-----------------------------------------------------------------------------------------------------------------*/
     /*MÉTODOS APLICADOS SOBRE "MÉDICO"*/
     public Medico buscarMedico(Scanner sc){
         String rut;
-
-        System.out.print("Ingrese RUT del médico objetivo: ");
         rut = sc.nextLine();
 
         for(Medico m : this.getMedicos()){
@@ -76,27 +74,16 @@ public class Hospital {
         System.out.print("El medico no existe. ");
         return null;
     }
-
-    public void printMedico(Medico m){
-        if(m != null){
-            System.out.println("\n--- DATOS DEL MÉDICO ---");
-            System.out.println("RUT: " +m.getRut());
-            System.out.println("Nombre: " +m.getNombre());
-            System.out.println("Especialidad: " +m.getEspecialidad());
-        }else{
-            System.out.println("Médico no encontrado.");
+    
+    public Medico buscarMedico(String nombre) {
+    for (Medico m : this.getMedicos()) {
+        if (m.getNombre().equalsIgnoreCase(nombre)) {
+            return m;
         }
     }
-
-    /*BUSQUEDA POR NOMBRE, SOBRECARGA 1*/
-    public void printMedico(String nombre){
-        for(Medico m : getMedicos()){
-            if(m.getNombre().equals(nombre)){
-                printMedico(m);
-            }
-        }
-
-    }
+    System.out.println("El médico no existe.");
+    return null;
+}
 
     public void agregarMedico(Scanner sc){
         String rut, nombre, especialidad;
@@ -147,13 +134,11 @@ public class Hospital {
 
         Paciente paciente = buscarPaciente(sc);
         if(paciente == null){
-            System.out.println("El paciente no existe.");
             return;
         }
 
         Medico medico = buscarMedico(sc);
         if(medico == null){
-            System.out.println("El medico no existe.");
             return;
         }
 

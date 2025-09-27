@@ -96,14 +96,14 @@ class Menu {
                 case 4:
                     p = hospital.buscarPaciente(sc);
                     if(p != null){
-                        p.modificarPaciente(sc);
+                        p.modificar(sc);
                         break;
                     }
                     break;
                 case 5:
                     p = hospital.buscarPaciente(sc);
                     if(p != null){
-                        p.printPaciente();
+                        p.printDatos();
                         break;
                     }
                     break;
@@ -138,18 +138,27 @@ class Menu {
                 case 4:
                     m = hospital.buscarMedico(sc);
                     if(m != null){
-                        m.modificarMedico(sc);
+                        m.modificar(sc);
                         break;
                     }
                     break;
                 case 5:
+                    System.out.print("Ingrese RUT del médico objetivo: ");
                     m = hospital.buscarMedico(sc);
-                    hospital.printMedico(m);
+                    if(m != null){
+                        m.printDatos();
+                        break;
+                    }
                     break;
                 case 6:
                     System.out.print("Ingrese el nombre del medico: ");
                     nombre = sc.nextLine();
-                    hospital.printMedico(nombre);
+                    m = hospital.buscarMedico(nombre);
+                    if(m != null){
+                        m.printDatos();
+                        break;
+                    }
+                    break;
                 case 0:
                     break;
                 default:

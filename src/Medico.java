@@ -1,18 +1,13 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Medico {
-    private String rut;
-    private String nombre;
+public class Medico extends Persona{
+    
     private String especialidad;
     private ArrayList<Consulta> consultas;
 
-    public Medico(){
-    }
-
     public Medico(String rut, String nombre, String especialidad){
-        this.rut = rut;
-        this.nombre = nombre;
+        super(rut,nombre);
         this.especialidad = especialidad;
         this.consultas = new ArrayList<>();
     }
@@ -21,40 +16,27 @@ public class Medico {
         return consultas;
     }
 
-    public String getRut(){
-        return rut;
-    }
-
-    public String getNombre(){
-        return nombre;
-    }
-
     public String getEspecialidad(){
         return especialidad;
-    }
-
-    public void setRut(String rut){
-        this.rut = rut;
-    }
-
-    public void setNombre(String nombre){
-        this.nombre = nombre;
     }
 
     public void setEspecialidad(String especialidad){
         this.especialidad = especialidad;
     }
 
-    public void modificarMedico(Scanner sc){
-        String nombre, especialidad;
-
-        System.out.print("Ingrese nuevo nombre: ");
-        nombre = sc.nextLine();
-        setNombre(nombre);
-
+    @Override
+    public void printDatos(){        
+        System.out.println("\n--- DATOS DEL MÉDICO ---");
+        System.out.println("RUT: " + getRut());
+        System.out.println("Nombre: " + getNombre());
+        System.out.println("Especialidad: " + getEspecialidad());
+    }
+    
+    @Override
+    public void modificar(Scanner sc){
+        super.modificar(sc);
         System.out.print("Ingrese nueva especialidad: ");
         especialidad = sc.nextLine();
-        setEspecialidad(especialidad);
     }
 }
 
