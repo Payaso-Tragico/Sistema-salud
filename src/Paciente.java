@@ -46,4 +46,10 @@ public class Paciente extends Persona {
         String diag = sc.nextLine();
         setDiagnostico(diag);
     }
+    
+    @Override
+    public String toString() {
+        return getNombre() + "," + getRut() + "," + getEdad() + "," + getDiagnostico();
+    }
+
 }

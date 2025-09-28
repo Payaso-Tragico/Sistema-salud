@@ -85,7 +85,7 @@ class Menu {
 
             switch (opcion) {
                 case 1:
-                    hospital.agregarPaciente(sc);
+                    hospital.agregarPaciente(sc);                    
                     break;
                 case 2:
                     hospital.eliminarPaciente(sc);
@@ -94,24 +94,33 @@ class Menu {
                     hospital.listarPacientes();
                     break;
                 case 4:
+                    try{
                     p = hospital.buscarPaciente(sc);
                     if(p != null){
                         p.modificar(sc);
+                        Logger.registrar(new Reporte("Paciente", "MODIFICADO", p.toString()));
                         break;
                     }
+                    }catch (NoEncontradoException e){
+                        System.out.println(e.getMessage() + "el paciente buscado no existe");                       
+                        }
                     break;
                 case 5:
+                    try{
                     p = hospital.buscarPaciente(sc);
                     if(p != null){
                         p.printDatos();
                         break;
                     }
+                    }catch (NoEncontradoException e){
+                        System.out.println(e.getMessage() + "el paciente buscado no existe");                       
+                        }
                     break;
                 case 0:
                     break;
                 default:
                     System.out.println("Opción inválida.");
-            }
+            }                    
         } while (opcion != 0);
     }
 
@@ -136,28 +145,33 @@ class Menu {
                     hospital.listarMedicos();
                     break;
                 case 4:
+                    try{
+                    System.out.print("Ingrese RUT del médico objetivo: ");
                     m = hospital.buscarMedico(sc);
-                    if(m != null){
-                        m.modificar(sc);
-                        break;
+                    m.modificar(sc);
+                    Logger.registrar(new Reporte("Médico", "MODIFICADO", m.toString()));
+                    } catch (NoEncontradoException e){
+                        System.out.println(e.getMessage() + "el médico a modifcar no existe.");
                     }
                     break;
                 case 5:
+                    try{
                     System.out.print("Ingrese RUT del médico objetivo: ");
-                    m = hospital.buscarMedico(sc);
-                    if(m != null){
-                        m.printDatos();
-                        break;
-                    }
+                    m = hospital.buscarMedico(sc);                    
+                    m.printDatos();
+                    } catch (NoEncontradoException e){
+                        System.out.println(e.getMessage() + "el médico buscado no existe");
+                    }  
                     break;
                 case 6:
-                    System.out.print("Ingrese el nombre del medico: ");
+                    try{
+                    System.out.print("Ingrese el nombre del médico: ");
                     nombre = sc.nextLine();
-                    m = hospital.buscarMedico(nombre);
-                    if(m != null){
-                        m.printDatos();
-                        break;
-                    }
+                    m = hospital.buscarMedico(nombre);                
+                    m.printDatos();
+                    } catch (NoEncontradoException e){
+                        System.out.println(e.getMessage() + "el médico buscado no existe");
+                    } 
                     break;
                 case 0:
                     break;
@@ -187,7 +201,8 @@ class Menu {
                     hospital.listarConsultas();
                     break;
                 case 4:
-                    c = hospital.buscarConsulta(sc);
+                    try{
+                    c = hospital.buscarConsulta(sc);               
                     if(c != null) {
                         do {
                             System.out.println("1.- Modificar los datos de la consulta\n2.- Reagendar la Consulta");
@@ -195,15 +210,22 @@ class Menu {
                         } while (opcion != 1 && opcion != 2);
                         if (opcion == 1) {
                             c.modificarConsulta(hospital, sc);
+                            Logger.registrar(new Reporte("Consulta", "MODIFICADO", c.toString()));
                         } else {
                             c.modificarConsulta(sc);
-                        }
+                            Logger.registrar(new Reporte("Consulta", "MODIFICADO", c.toString()));
+                            }
+                        }   
+                    }catch (NoEncontradoException e){
+                        System.out.println(e.getMessage() + "la consulta buscado no existe.");
                     }
-                    break;
                 case 5:
+                    try{
                     c = hospital.buscarConsulta(sc);
                     hospital.printConsulta(c);
-                    break;
+                    }catch(NoEncontradoException e){
+                        System.out.println(e.getMessage() + "la consulta buscado no existe.");
+                    }
                 case 0:
                     break;
                 default:
@@ -215,12 +237,11 @@ class Menu {
 }
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args){
         int opcion;
         Hospital hospitalCentral = new Hospital("Hospital Central", "Av. Principal 123", "2222 3333");
         Inicializador.cargarDatos(hospitalCentral);
-
-        do{
+        do{          
             PrintMenu.printMenuPrincipal();
             Scanner sc = new Scanner(System.in);
             opcion = Utilidad.leerEntero(sc, "");
@@ -235,7 +256,7 @@ public class Main {
                     Menu.menuConsultas(hospitalCentral);
                     break;
                 default:
-            }
+                }                  
         }while(opcion != 0);
     }
 }

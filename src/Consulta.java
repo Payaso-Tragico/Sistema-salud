@@ -59,7 +59,8 @@ public class Consulta {
     }
 
     public void modificarConsulta(Hospital h, Scanner sc) {
-
+        
+        Paciente paciente = null;
         System.out.print("Nueva fecha: ");
         String fecha = sc.nextLine();
         setFecha(fecha);
@@ -71,12 +72,16 @@ public class Consulta {
         System.out.print("Nueva sala: ");
         String sala = sc.nextLine();
         setSala(sala);
-
-        System.out.println("Seleccionar nuevo paciente:");
-        Paciente paciente = h.buscarPaciente(sc);
-        if (paciente != null) {
-            setPaciente(paciente);
-        }
+        
+        try{            
+            paciente = h.buscarPaciente(sc);
+            if (paciente != null) {
+                setPaciente(paciente);
+            }
+        }catch (NoEncontradoException e){
+                System.out.print(e.getMessage() + "paciente no encontrado");
+            }
+        
 
         /*TENGO MIS DUDAS SOBRE ESTO*/
         System.out.println("Igrese el RUT del nuevo medico:");
@@ -97,6 +102,11 @@ public class Consulta {
         System.out.println("Ingrese la fecha de la nueva consulta");
         fecha = sc.nextLine();
         setFecha(fecha);
-        System.out.println("Fecha de la consulta con ID: " + getId() + " actualizada a " + fecha);
+        System.out.println("Fecha de la consulta con ID: " + getId() + " actualizada a " + fecha);        
+    }
+    
+    @Override
+    public String toString() {
+        return getId() + "," + getSala() + "," + getFecha() + "," + getMotivo(); 
     }
 }

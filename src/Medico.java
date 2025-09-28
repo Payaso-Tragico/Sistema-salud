@@ -38,6 +38,13 @@ public class Medico extends Persona{
         System.out.print("Ingrese nueva especialidad: ");
         especialidad = sc.nextLine();
     }
+    
+    @Override
+    public String toString() {
+        return getNombre() + "," + getRut() + "," + getEspecialidad(); 
+    }
+
 }
+
 
 
