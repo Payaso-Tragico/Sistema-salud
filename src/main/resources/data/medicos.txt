@@ -1,0 +1,12 @@
+66778899-0;Carlos Ruiz;Medicina General
+11223344-5;Maria Torres;Pediatria
+33445566-7;Jorge Castillo;Traumatologia
+44556677-8;Valeria Gomez;Neurologia
+55667788-9;Ricardo Soto;Dermatologia
+66778899-1;Camila Rojas edede;Oftalmologia
+77889900-2;Fernando Diaz;Ginecologia
+88990011-3;Patricia Herrera;Psiquiatria
+99001122-4;Luis Ramirez;Oncologia
+10111213-5;Andrea Vargas;Endocrinologia
+12131415-6;Miguel Alvarezrrr;Oncologia
+21374173-K;Jose Gonzalez;nada realmente

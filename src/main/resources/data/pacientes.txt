@@ -1,0 +1,23 @@
+66778899-0;Camila Ramirez;33;Ansiedad
+66554433-2;Isabel Soto;34;Obesidad
+55443322-5;Ana Torres De La Muerte;25;Embarazo
+33442211-5;Diego Vargas;29;Fractura pierna
+99112233-8;Monica Alvarez;31;Depresion
+22113344-6;Rodrigo Pineda;47;Bronquitis cronica
+22334455-6;Jose Castillo;70;Problemas cardiacos
+98765432-1;Maria Lopez;45;Diabetes tipo 2
+55667788-4;Carolina Herrera;65;Parkinson
+33221144-9;Natalia Gutierrez;26;Apendicitis
+33445566-7;Lucia Fernandez;28;Gastritis
+11220033-9;Andrea Morales;42;Hipotiroidismo
+44332211-3;Hector Castillo;38;Hernia lumbar
+88776655-1;Mauricio Figueroa;59;Cancer de colon
+88990011-2;Fernando Soto;55;Colesterol alto
+99887766-5;Valentina Rojas;22;Anemia
+77665544-3;Carlos Diaz;50;Artritis
+44556677-8;Martin Silva;35;Alergia estacional
+11222333-4;Pedro Ramirez;60;Asma cronica
+11002233-7;Javier Navarro;36;Hepatitis B
+99880022-4;Patricia Medina;41;Fibromialgia
+77889900-7;Sergio Campos;53;Insuficiencia renal
+12345678-9;Juan Perez;30;Hipertension
