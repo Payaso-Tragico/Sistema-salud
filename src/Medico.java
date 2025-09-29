@@ -25,13 +25,13 @@ public class Medico extends Persona{
     }
 
     @Override
-    public void printDatos(){        
-        System.out.println("\n--- DATOS DEL MÉDICO ---");
-        System.out.println("RUT: " + getRut());
-        System.out.println("Nombre: " + getNombre());
-        System.out.println("Especialidad: " + getEspecialidad());
+    public String printDatos() {
+        return "--- DATOS DEL MÉDICO ---\n" +
+               "RUT: " + getRut() + "\n" +
+               "Nombre: " + getNombre() + "\n" +
+               "Especialidad: " + getEspecialidad();
     }
-    
+
     @Override
     public void modificar(Scanner sc){
         super.modificar(sc);
@@ -45,6 +45,8 @@ public class Medico extends Persona{
     }
 
 }
+
+
 
 
 

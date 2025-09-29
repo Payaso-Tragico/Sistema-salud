@@ -7,15 +7,15 @@ public class Consulta {
     private String sala;
     private Paciente paciente;
 
-    public Consulta() {
-    }
-
     public Consulta(int id, String fecha, String motivo, String sala, Paciente paciente) {
         this.id = id;
         this.fecha = fecha;
         this.motivo = motivo;
         this.sala = sala;
         this.paciente = paciente;
+    }    
+    
+    public Consulta() {
     }
 
     public int getId() {
@@ -58,45 +58,39 @@ public class Consulta {
         this.paciente = paciente;
     }
 
-    public void modificarConsulta(Hospital h, Scanner sc) {
-        
-        Paciente paciente = null;
-        System.out.print("Nueva fecha: ");
-        String fecha = sc.nextLine();
-        setFecha(fecha);
+    
+    public void modificarConsulta(Hospital h, String fecha, String motivo, String sala, String rutPaciente, String rutMedico) throws NoEncontradoException {
+        if (fecha == null) fecha = "";
+        if (motivo == null) motivo = "";
+        if (sala == null) sala = "";
+        if (rutPaciente == null) rutPaciente = "";
+        if (rutMedico == null) rutMedico = "";
 
-        System.out.print("Nuevo motivo: ");
-        String motivo = sc.nextLine();
-        setMotivo(motivo);
+        Paciente paciente = h.buscarPacientePorRut(rutPaciente);
 
-        System.out.print("Nueva sala: ");
-        String sala = sc.nextLine();
-        setSala(sala);
-        
-        try{            
-            paciente = h.buscarPaciente(sc);
-            if (paciente != null) {
-                setPaciente(paciente);
-            }
-        }catch (NoEncontradoException e){
-                System.out.print(e.getMessage() + "paciente no encontrado");
-            }
-        
-
-        /*TENGO MIS DUDAS SOBRE ESTO*/
-        System.out.println("Igrese el RUT del nuevo medico:");
-        String rut = sc.nextLine();
+        Medico nuevoMedico = null;
         for (Medico m : h.getMedicos()) {
-            if (m.getRut().equals(rut)) {
-                for (Medico med : h.getMedicos()) {
-                    med.getConsultas().remove(this);
-                }
-                m.getConsultas().add(this);
+            if (m.getRut() != null && m.getRut().trim().equalsIgnoreCase(rutMedico.trim())) {
+                nuevoMedico = m;
+                break;
             }
         }
+        if (nuevoMedico == null) {
+            throw new NoEncontradoException("Médico con RUT " + rutMedico + " no encontrado.");
+        }
+
+        setFecha(fecha.trim());
+        setMotivo(motivo.trim());
+        setSala(sala.trim());
+        setPaciente(paciente);
+
+        for (Medico m : h.getMedicos()) {
+            m.getConsultas().remove(this);
+        }
+
+        nuevoMedico.getConsultas().add(this);
     }
 
-    //La función de sobrecarga. la idea es que funciona como una especie de "reagendación"
     public void modificarConsulta(Scanner sc) {
         String fecha;
         System.out.println("Ingrese la fecha de la nueva consulta");

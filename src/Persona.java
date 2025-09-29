@@ -34,8 +34,8 @@ public class Persona {
         this.nombre = sc.nextLine();
     }   
     
-    public void printDatos() {
-        System.out.println("RUT: " + getRut());
-        System.out.println("Nombre: " + getNombre());
+    public String printDatos() {
+        return "RUT: " + getRut() + "\n" +
+               "Nombre: " + getNombre();
     }
 }

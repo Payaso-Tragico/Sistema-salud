@@ -28,12 +28,12 @@ public class Paciente extends Persona {
     }
 
     @Override
-    public void printDatos(){
-        System.out.println("Paciente encontrado:");
-        System.out.println("RUT: " + getRut());
-        System.out.println("Nombre: " + getNombre());
-        System.out.println("Edad: " + getEdad());
-        System.out.println("Diagnóstico: " + getDiagnostico());
+    public String printDatos() {
+        return "Paciente encontrado:\n" +
+               "RUT: " + getRut() + "\n" +
+               "Nombre: " + getNombre() + "\n" +
+               "Edad: " + getEdad() + "\n" +
+               "Diagnóstico: " + getDiagnostico();
     }
     
     @Override

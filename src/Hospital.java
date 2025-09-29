@@ -1,7 +1,12 @@
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class Hospital {
     private String nombre;
@@ -37,9 +42,18 @@ public class Hospital {
         return telefono;
     }
 
-    public void agregarPaciente(Paciente paciente){
-        pacientes.put(paciente.getRut(), paciente);
+   public void agregarPaciente(Paciente paciente) throws FormatoInvalidoException, EntidadExistenteException {
+    Utilidad.validarRut(paciente.getRut());
+
+    if (pacientes.containsKey(paciente.getRut())) {
+        throw new EntidadExistenteException(
+            "El paciente con RUT " + paciente.getRut() + " ya existe en el hospital."
+        );
     }
+
+    pacientes.put(paciente.getRut(), paciente);
+}
+
 
     public void agregarMedico(Medico medico){
         medicos.add(medico);
@@ -56,22 +70,24 @@ public class Hospital {
     public void setTelefono(String telefono){
         this.telefono = telefono;
     }
-
+    
     public boolean removePaciente(String rut){ return pacientes.remove(rut) != null; }
-    
+
     public boolean removeMedico(Medico medico){ return medicos.remove(medico); }
-    
-    /*-----------------------------------------------------------------------------------------------------------------*/
-    /*MÉTODO PARA VALIDAR RUT"*/
-    public static void validarRut(String rut) throws FormatoInvalidoException {
-        String regex = "\\d{7,8}-[\\dkK]";       
-        if (!rut.matches(regex)) {
-            throw new FormatoInvalidoException("RUT inválido: " + rut + ". Debe tener formato 21316835-5");
-        }
-    }   
-    
-    /*-----------------------------------------------------------------------------------------------------------------*/
+
     /*MÉTODOS APLICADOS SOBRE "MÉDICO"*/
+    
+    public Medico buscarMedicoPorRut(String rut) {
+        if (rut == null) return null;
+        String clave = rut.trim();
+        for (Medico m : this.getMedicos()) {
+            if (m.getRut() != null && m.getRut().trim().equalsIgnoreCase(clave)) {
+                return m;
+            }
+        }
+        return null;
+    }    
+
     public Medico buscarMedico(Scanner sc) throws NoEncontradoException{
         String rut;
         rut = sc.nextLine();
@@ -85,33 +101,55 @@ public class Hospital {
     }
     
     public Medico buscarMedico(String nombre) throws NoEncontradoException{
-    for (Medico m : this.getMedicos()) {
-        if (m.getNombre().equalsIgnoreCase(nombre)) {
-            return m;
+        for (Medico m : this.getMedicos()) {
+            if (m.getNombre().equalsIgnoreCase(nombre)) {
+                return m;
+                }
+            }
+        throw new NoEncontradoException("Error: ");
+    }
+    
+    public void printMedico(Medico m){
+        if(m != null){
+            System.out.println("\n--- DATOS DEL MÉDICO ---");
+            System.out.println("RUT: " +m.getRut());
+            System.out.println("Nombre: " +m.getNombre());
+            System.out.println("Especialidad: " +m.getEspecialidad());
+        }else{
+            System.out.println("Médico no encontrado.");
+        }
+    }
+
+    /*BUSQUEDA POR NOMBRE, SOBRECARGA 1*/
+    public void printMedico(String nombre){
+        for(Medico m : getMedicos()){
+            if(m.getNombre().equals(nombre)){
+                printMedico(m);
             }
         }
-    throw new NoEncontradoException("Error: ");
+
     }
 
-    public void agregarMedico(Scanner sc){
-        String rut = null, nombre, especialidad;
-        try{
+    public void agregarMedico(Scanner sc) throws FormatoInvalidoException, EntidadExistenteException {
         System.out.print("Ingrese RUT del médico: ");
-        rut = sc.nextLine();
-        validarRut(rut);
-        }catch(FormatoInvalidoException e){
-            System.out.println(e.getMessage());
-            return;
+        String rut = sc.nextLine().trim();
+        Utilidad.validarRut(rut); 
+
+        if (medicos.stream().anyMatch(m -> m.getRut().equalsIgnoreCase(rut))) {
+            throw new EntidadExistenteException("El médico con RUT " + rut + " ya existe en el hospital.");
         }
+
         System.out.print("Ingrese nombre: ");
-        nombre = sc.nextLine();
+        String nombre = sc.nextLine();
+
         System.out.print("Ingrese especialidad: ");
-        especialidad = sc.nextLine();
+        String especialidad = sc.nextLine();
 
         Medico medico = new Medico(rut, nombre, especialidad);
-        Logger.registrar(new Reporte("Médico", "AGREGADO", medico.toString()));
+        HospitalLogger.registrar(new Reporte("Médico", "AGREGADO", medico.toString()));
         agregarMedico(medico);
     }
+
 
     public void listarMedicos(){
         System.out.println("\n--- LISTA DE MÉDICOS ---");
@@ -120,51 +158,73 @@ public class Hospital {
         }
     }
 
-    public void eliminarMedico(Scanner sc){
-        try{
-            System.out.print("Ingrese RUT del médico a Elimar: ");
-            Medico m = buscarMedico(sc);                
-            getMedicos().remove(m);  
-            System.out.print("Médico eliminado exitosamente");      
-            Logger.registrar(new Reporte("Médico", "ELIMINADO", m.toString()));
-        } catch (NoEncontradoException e){
-                        System.out.println(e.getMessage() + "El medico a eliminar no existe.");
-                    } 
+    public void eliminarMedico(Scanner sc) throws NoEncontradoException {
+        System.out.print("Ingrese RUT del médico a eliminar: ");
+        String rut = sc.nextLine();
+
+        Medico m = buscarMedicoPorRut(rut);
+        if (m == null) throw new NoEncontradoException("Médico no encontrado");
+
+        getMedicos().remove(m);
+        HospitalLogger.registrar(new Reporte("Médico", "ELIMINADO", m.toString()));
     }
+    
+    public void modificarMedico(Scanner sc) throws FormatoInvalidoException, NoEncontradoException {
+        System.out.print("Ingrese RUT del médico a modificar: ");
+        String rut = sc.nextLine();
+
+        Medico m = buscarMedicoPorRut(rut);
+        if (m == null) throw new NoEncontradoException("Médico no encontrado");
+
+        System.out.print("Nuevo nombre: ");
+        String nombre = sc.nextLine();
+        System.out.print("Nueva especialidad: ");
+        String especialidad = sc.nextLine();
+
+        m.setNombre(nombre);
+        m.setEspecialidad(especialidad);
+        HospitalLogger.registrar(new Reporte("Médico", "MODIFICADO", m.toString()));
+    }
+    
     /*-----------------------------------------------------------------------------------------------------------------*/
     /*MÉTODOS PARA CONSULTAS*/
-    public void agregarConsulta(Scanner sc){
-        int id;
-        String fecha, motivo, sala;
-        Paciente paciente = null;
-        id = Utilidad.leerEntero(sc,"Ingrese ID de la consulta: " );
-
-        System.out.print("Ingrese fecha de la consulta (DD-MM-YYYY): ");
-        fecha = sc.nextLine();
-
-        System.out.print("Ingrese motivo de la consulta: ");
-        motivo = sc.nextLine();
-
-        System.out.print("Ingrese sala: ");
-        sala = sc.nextLine();
-        
-        
-        try{
-        paciente = buscarPaciente(sc);    
-        }catch (NoEncontradoException e){
-                System.out.println(e.getMessage() + "el paciente buscado no existe.");
-            }         
-        
-        try{
-        Medico medico = buscarMedico(sc);        
-        Consulta consulta = new Consulta(id, fecha, motivo, sala, paciente);
-        agregarConsulta(medico.getRut(), consulta);
-        Logger.registrar(new Reporte("Consulta", "AGREGADO", consulta.toString()));
-        } catch (NoEncontradoException e){
-                        System.out.println(e.getMessage() + "el médico buscado no existe.");
-                    } 
-        
+    
+    public Map<Consulta, Medico> obtenerConsultasPorFecha(String fecha) {
+        Map<Consulta, Medico> resultado = new HashMap<>(); 
+        for (Medico m : getMedicos()) {
+            for (Consulta c : m.getConsultas()) {
+                if (c.getFecha().equals(fecha.trim())) {
+                    resultado.put(c, m);
+                }
+            }
+        }
+        return resultado;
     }
+
+
+    
+    public void agregarConsulta(int id, String fecha, String motivo, String sala, String rutPaciente, String rutMedico)
+            throws NoEncontradoException, EntidadExistenteException {
+
+        Paciente paciente = buscarPacientePorRut(rutPaciente);
+        if (paciente == null) throw new NoEncontradoException("Paciente con RUT " + rutPaciente + " no encontrado.");
+
+        Medico medico = buscarMedicoPorRut(rutMedico);
+        if (medico == null) throw new NoEncontradoException("Médico con RUT " + rutMedico + " no encontrado.");
+
+        for (Medico m : getMedicos()) {
+            for (Consulta c : m.getConsultas()) {
+                if (c.getId() == id) {
+                    throw new EntidadExistenteException("Ya existe una consulta con ID " + id + " en el hospital.");
+                }
+            }
+        }
+
+        Consulta c = new Consulta(id, fecha, motivo, sala, paciente);
+        medico.getConsultas().add(c);
+    }
+
+
 
     public void agregarConsulta(String rut, Consulta consulta){
         for(Medico m : getMedicos()){
@@ -174,10 +234,12 @@ public class Hospital {
         }
     }
 
-    public Consulta buscarConsulta(Scanner sc) throws NoEncontradoException{
+    public Consulta buscarConsulta(Scanner sc){
         int id;
+
         id = Utilidad.leerEntero(sc,"Ingrese ID de la consulta: ");
         sc.nextLine();
+
         for(Medico m : getMedicos()){
             for(Consulta c : m.getConsultas()){
                 if(id == c.getId()){
@@ -185,7 +247,8 @@ public class Hospital {
                 }
             }
         }
-        throw new NoEncontradoException("Error: ");
+        System.out.print("La consulta no existe.");
+        return null;
     }
 
     public void listarConsultas() {
@@ -199,14 +262,10 @@ public class Hospital {
     }
 
     public void eliminarConsulta(Scanner sc){
-        try{
         Consulta c = buscarConsulta(sc);
+
         for(Medico m : getMedicos()){
             m.getConsultas().remove(c);
-            Logger.registrar(new Reporte("Consulta", "ELIMINADO", c.toString()));
-        }
-        }catch (NoEncontradoException e){
-            System.out.println(e.getMessage() + "el Consulta buscado no existe.");
         }
     }
 
@@ -236,52 +295,55 @@ public class Hospital {
     }
     /*----------------------------------------------------------------------------------------------------------------*/
     /*MÉTODOS PARA PACIENTES*/
-    public void agregarPaciente(Scanner sc){
-        String rut = null, nombre, diagnostico;
-        int edad;
-        try{
-        System.out.print("Ingrese RUT del paciente: ");
-        rut = sc.nextLine();
-        validarRut(rut);
-        }catch (FormatoInvalidoException e) {
-        System.out.println(e.getMessage());
-        return;
+    
+    public List<Paciente> obtenerPacientesPorMedico(String rutMedico) {
+        List<Paciente> listPacientes = new ArrayList<>();
+
+        for (Medico m : medicos) {
+            if (m.getRut().equals(rutMedico)) {
+                for (Consulta c : m.getConsultas()) {
+                    listPacientes.add(c.getPaciente());
+                }
+                break; 
+            }
         }
-        System.out.print("Ingrese nombre: ");
-        nombre = sc.nextLine();
-        edad = Utilidad.leerEntero(sc, "Ingrese edad: ");        
-        System.out.print("Ingrese diagnóstico: ");
-        diagnostico = sc.nextLine();
 
-        Paciente paciente = new Paciente(rut, nombre, edad, diagnostico);
-        agregarPaciente(paciente);        
-        Logger.registrar(new Reporte("Paciente", "AGREGADO", paciente.toString()));
+        return listPacientes;
     }
-
-    public Paciente buscarPaciente(Scanner sc) throws NoEncontradoException{
-        System.out.print("Ingrese RUT del paciente objetivo: ");
-        String rut = sc.nextLine();
-
-        for (Paciente p : getPacientes()) {
-            if (p.getRut().equals(rut)) {
+    
+    public Paciente buscarPacientePorRut(String rut) throws NoEncontradoException {
+        if (rut == null || rut.trim().isEmpty()) {
+            throw new NoEncontradoException("RUT vacío o nulo.");
+        }
+        String clave = rut.trim();
+        for (Paciente p : this.getPacientes()) {
+            if (p.getRut() != null && p.getRut().trim().equalsIgnoreCase(clave)) {
                 return p;
             }
         }
-        throw new NoEncontradoException("Error:");
+        throw new NoEncontradoException("Paciente con RUT " + rut + " no encontrado.");
     }
 
-    public void eliminarPaciente(Scanner sc){    
-    try{
+    
+    public Paciente buscarPaciente(Scanner sc) throws NoEncontradoException {
+        System.out.print("Ingrese RUT del paciente objetivo: ");
+        String rut = sc.nextLine();
+        Paciente p = buscarPacientePorRut(rut);
+        if (p == null) {
+            throw new NoEncontradoException("Paciente con RUT " + rut + " no encontrado.");
+        }
+        return p;
+    }
+
+    public void eliminarPaciente(Scanner sc) throws NoEncontradoException{
         Paciente p = buscarPaciente(sc);
+
         if(p != null){
             removePaciente(p.getRut());
-            Logger.registrar(new Reporte("Paciente", "ELIMINADO", p.toString()));
+        } else {
+            System.out.println("El paciente no existe.");
         }
-        }catch (NoEncontradoException e){
-                System.out.print(e.getMessage() + "paciente no encontrado");
-            }
     }
-    
 
     public void listarPacientes(){
         System.out.println("\n--- LISTA DE PACIENTES ---");
@@ -289,5 +351,4 @@ public class Hospital {
             System.out.println("RUT: " + p.getRut() + " | Nombre: " + p.getNombre() + " | Edad: " + p.getEdad() + " | Diagnóstico: " + p.getDiagnostico());
         }
     }
-
 }

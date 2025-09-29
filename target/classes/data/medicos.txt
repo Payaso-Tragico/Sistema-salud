@@ -9,4 +9,5 @@
 99001122-4;Luis Ramirez;Oncologia
 10111213-5;Andrea Vargas;Endocrinologia
 12131415-6;Miguel Alvarezrrr;3333
+123123113;TESTMEDICO 2;TESTEAR SI FUNCIONA 2
 21374173-K;Jose Gonzalez;nada realmente

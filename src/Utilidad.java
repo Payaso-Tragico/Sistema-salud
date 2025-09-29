@@ -18,4 +18,10 @@ public class Utilidad {
 
         return numero;
     }
+    public static void validarRut(String rut) throws FormatoInvalidoException {
+        String regex = "\\d{7,8}-[\\dkK]";       
+        if (!rut.matches(regex)) {
+            throw new FormatoInvalidoException("RUT inválido: " + rut + ". Debe tener formato 21316835-5");
+        }
+    }   
 }
