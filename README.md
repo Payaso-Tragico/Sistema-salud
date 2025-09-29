@@ -1,7 +1,5 @@
-Versiones de los programas utilizados:
-JVM (Java.exe), en la versión 19.0.2 (Amazon Corretto), desde el entorno de desarrollo: IntelliJ IDEA Community Edition 2023.3.1
+La versión del programa utilizado es: Apache Netbeans IDE 11.1 con la versión del JDK: 11.0.2.
 
-Instrucciones de inicialización:
-Desde el IntelliJ IDEA uno se dirige a: File->Open->(ruta de la carpeta) y eso debería cargar el programa con todas sus clases y dejarlo listo para la ejecución.
-después de eso: SRC->Main.java->main
-y desde aquí ya se puede ejecutar el programa.
+Instrucciones de Inicialización: desde el programa Apache Netbeans, apretamos la opción 'Open Project' buscamos
+donde se encuentre el proyecto 'Sistema-salud-main' lo seleccionamos y apretamos el botón 'Open Project' por último
+se corre el programa desde el Main.java con el botón 'Run Project'
